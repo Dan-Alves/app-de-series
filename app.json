@@ -1,0 +1,12 @@
+{
+  "name": "app-de-series",
+  "displayName": "app-de-series",
+  "expo": {
+    "name": "app-de-series",
+    "slug": "app-de-series",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
