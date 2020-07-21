@@ -25,8 +25,17 @@ export default class LoginPage extends React.Component {
 
   render() {
     return (
-      <View>
-        <FormRow>
+      <View style={styles.container}>
+        <FormRow first>
+            <TextInput 
+              style={styles.input}
+              placeholder="TEMPORARIO"
+              value={this.state.mail}
+              onChangeText={value => this.onChangeHandler('mail', value)}
+            /> 
+        </FormRow>
+
+        <FormRow first>
             <TextInput 
               style={styles.input}
               placeholder="usuario@email.com"
@@ -34,7 +43,8 @@ export default class LoginPage extends React.Component {
               onChangeText={value => this.onChangeHandler('mail', value)}
             /> 
         </FormRow>
-        <FormRow>
+        
+        <FormRow last>
             <TextInput 
               style={styles.input}
               placeholder="******" 
@@ -43,16 +53,21 @@ export default class LoginPage extends React.Component {
               onChangeText={value => this.onChangeHandler('password', value)}
             /> 
         </FormRow>
-        <Button 
-          title="Entrar" 
-          onPress={() => this.tryLogin()}
-        />
+        
+          <Button 
+            title="Entrar" 
+            onPress={() => this.tryLogin()}
+          />
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
   input: {
     paddingLeft: 5,
     paddingRight: 5,

@@ -2,9 +2,12 @@ import React from 'react';
 import { View,  StyleSheet } from 'react-native';
 
 const FormRow = props => {
-  const { children } =  props;
+  const { children, first, last } =  props;
   return (
-    <View style={styles.container}>
+    <View style={[ 
+      styles.container, first ? styles.first : null,
+      last ? styles.last : null
+    ]}>
         {children}
     </View>
   )
@@ -16,10 +19,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: 5,
     marginBottom: 5,
-    marginLeft: 10,
-    marginRight: 10,
     elevation: 1,
-  }
+  },
+  first: {
+    marginTop: 10,
+  },
+  last: {
+    marginTop: 10,
+  },
 });
 
 export default FormRow;
