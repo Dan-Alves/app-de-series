@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
 import firebase from '@firebase/app';
 import '@firebase/auth';
 
@@ -45,18 +45,45 @@ export default class LoginPage extends React.Component {
     this.setState({ isLoading: true, message: '' });
     const { mail, password } = this.state;
     
+    const loginUserSucess = user => {
+      this.setState({ message: 'Sucesso!' });
+    }
+
+    const loginUserFailed = error => {
+      this.setState({
+        message: this.getMessageByErrorCode(error.code)
+      });
+    }
+
     firebase
       .auth()
       .signInWithEmailAndPassword(mail, password)
-      .then(user => {
-        this.setState({ message: 'Sucesso!'})
-        //console.log('Usuário autenticado!', user);
-      })
+      .then(loginUserSucess)
       .catch(error => {
-        this.setState({ 
-          message: this.getMessageByErrorCode(error.code) 
-        })
-        //console.log('Usuário NÃO encontrado', error);
+        if(error.code === 'auth/user-not-found') {
+          return Alert.alert(
+            'Usuário não encontrado', 
+            'Deseja criar um cadastro com as informações inseridas?',
+            [{
+              text: 'Não',
+              onPress: () => console.log('Usuário não quer criar conta'),
+              style: 'cancel'
+            }, {
+              text: 'Sim',
+              onPress: () => {
+                firebase
+                  .auth()
+                  .createUserWithEmailAndPassword(mail, password)
+                  .then(loginUserSucess)
+                  .catch(loginUserFailed)
+              }
+            }],
+            { cancelable: false }
+          )
+          return;
+        } 
+          loginUserFailed(error);
+       
       })
       .then(() => this.setState({ isLoading: false }));
   }
