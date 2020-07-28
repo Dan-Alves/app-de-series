@@ -13,6 +13,7 @@ export default class LoginPage extends React.Component {
       mail: '',
       password: '',
       isLoading: false,
+      message: ''
     }
   }
 
@@ -41,19 +42,46 @@ export default class LoginPage extends React.Component {
   }
 
   tryLogin() {
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true, message: '' });
     const { mail, password } = this.state;
     
     firebase
       .auth()
       .signInWithEmailAndPassword(mail, password)
       .then(user => {
-        console.log('Usuário autenticado!', user);
+        this.setState({ message: 'Sucesso!'})
+        //console.log('Usuário autenticado!', user);
       })
       .catch(error => {
-        console.log('Usuário NÃO encontrado', error);
+        this.setState({ 
+          message: this.getMessageByErrorCode(error.code) 
+        })
+        //console.log('Usuário NÃO encontrado', error);
       })
       .then(() => this.setState({ isLoading: false }));
+  }
+
+  getMessageByErrorCode(errorCode) {
+    switch(errorCode) {
+      case 'auth/wrong-password':
+        return 'Senha incorreta';
+      case 'auth/user-not-found':
+        return 'Usuário não encontrado';
+      default:
+        return 'Erro desconhecido';
+    }
+  }
+
+  renderMessage() {
+    const { message } = this.state;
+    if(!message)
+      return null;
+
+    return (
+      <View>
+        <Text>{ message }</Text>
+      </View>
+    );
   }
 
   renderButton() {
@@ -90,7 +118,7 @@ export default class LoginPage extends React.Component {
         </FormRow>
         
         { this.renderButton() }
-          
+        { this.renderMessage()}
       </View>
     )
   }
